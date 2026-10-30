@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Advance Happy Birthday, My Love! ❤️</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0d001a, #1a0033, #330033);
+      --primary-color: #ff3366;
+      --secondary-color: #ff99bb;
+      --accent-color: #ffd700;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.18);
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: #ffffff;
+      font-family: var(--font-family);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 15px 60px 15px;
+      position: relative;
+    }
+
+    /* Background Particle Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Container */
+    .app-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      text-align: center;
+    }
+
+    /* Header & Badge */
+    .advance-badge {
+      background: rgba(255, 51, 102, 0.2);
+      border: 1px solid var(--primary-color);
+      color: var(--secondary-color);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    h1.hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #ff3366, #ff99bb, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.3;
+      margin-top: 5px;
+    }
+
+    .sub-title {
+      font-size: 1rem;
+      color: #dddddd;
+      font-weight: 300;
+    }
+
+    /* Interactive Virtual Cake Section */
+    .cake-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 25px 20px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cake-instructions {
+      font-size: 0.95rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    /* Virtual Cake CSS */
+    .cake {
+      position: relative;
+      width: 180px;
+      height: 140px;
+      margin-top: 30px;
+      cursor: pointer;
+    }
+
+    .plate {
+      width: 220px;
+      height: 14px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      position: absolute;
+      bottom: -10px;
+      left: -20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .layer {
+      position: absolute;
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .layer-bottom {
+      bottom: 0;
+      height: 50px;
+      background: #5c2c16;
+    }
+
+    .layer-middle {
+      bottom: 50px;
+      height: 45px;
+      background: #ff6699;
+    }
+
+    .layer-top {
+      bottom: 95px;
+      height: 40px;
+      background: #fff;
+    }
+
+    .icing {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      background: #fff;
+      border-radius: 10px 10px 0 0;
+    }
+
+    /* Candle */
+    .candle {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 35px;
+      background: linear-gradient(to bottom, #ffd700, #ff9900);
+      border-radius: 4px;
+      z-index: 5;
+    }
+
+    .flame {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 20px;
+      background: #ff9900;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px #ff9900, 0 0 25px #ff3300;
+      animation: flicker 0.8s infinite alternate;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .flame.off {
+      opacity: 0;
+      transform: translateX(-50%) scale(0);
+    }
+
+    /* Audio Player Control */
+    .music-control-btn {
+      background: linear-gradient(45deg, #ff3366, #ff6699);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+      margin-top: 10px;
+    }
+
+    /* Surprise Gifts Unboxing */
+    .gifts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+    }
+
+    .gift-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .gift-box:active {
+      transform: scale(0.95);
+    }
+
+    .gift-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .gift-title {
+      font-size: 0.85rem;
+      color: var(--secondary-color);
+      font-weight: 600;
+    }
+
+    /* Modal Pop-up for Letters/Photos */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: #1a0a2a;
+      border: 1px solid var(--primary-color);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+      position: relative;
+      text-align: center;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-body-title {
+      font-size: 1.3rem;
+      color: var(--accent-color);
+      margin-bottom: 12px;
+    }
+
+    .modal-body-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #f0f0f0;
+      margin-bottom: 15px;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Music Tag -->
+  <audio id="bg-music" loop src="love_song.mp3"></audio>
+
+  <!-- Particle Background Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="app-container">
+    
+    <!-- Top Badge -->
+    <div class="advance-badge">🎉 Countdown to Nov 17st 🎉</div>
+
+    <!-- Main Title -->
+    <h1 class="hero-title">Advance Happy Birthday, My Dearest Husband! ❤️</h1>
+    <p class="sub-title">To the king of my heart, I couldn't wait until November 17st to start celebrating you!</p>
+
+    <!-- Music Toggle Button -->
+    <button class="music-control-btn" id="music-btn" onclick="toggleAudio()">
+      <span>🎵</span> <span id="music-btn-text">Play Favorite Song</span>
+    </button>
+
+    <!-- Virtual Birthday Cake -->
+    <div class="cake-card">
+      <div class="cake-instructions" id="cake-instruction">👇 Tap/Click the candle to blow it out & make a wish!</div>
+      
+      <div class="cake" onclick="blowCandle()">
+        <div class="plate"></div>
+        <div class="layer layer-bottom"></div>
+        <div class="layer layer-middle"></div>
+        <div class="layer layer-top">
+          <div class="icing"></div>
+        </div>
+        <div class="candle">
+          <div class="flame" id="flame"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Surprise Boxes -->
+    <div class="gifts-grid">
+      <div class="gift-box" onclick="openGift(1)">
+        <div class="gift-icon">🎁</div>
+        <div class="gift-title">Surprise #1</div>
+      </div>
+      <div class="gift-box" onclick="openGift(2)">
+        <div class="gift-icon">💌</div>
+        <div class="gift-title">Love Letter</div>
+      </div>
+      <div class="gift-box" onclick="openGift(3)">
+        <div class="gift-icon">⭐</div>
+        <div class="gift-title">My Wish For You</div>
+      </div>
+      <div class="gift-box" onclick="openGift(4)">
+        <div class="gift-icon">💖</div>
+        <div class="gift-title">Forever & Always</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Pop-up -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-body-title" id="modal-title">Title</div>
+      <div class="modal-body-text" id="modal-text">Text content goes here...</div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Audio Auto-Play Handling
+    const audio = document.getElementById('bg-music');
+    const musicBtnText = document.getElementById('music-btn-text');
+    let isPlaying = false;
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        musicBtnText.textContent = "Play Favorite Song";
+        isPlaying = false;
+      } else {
+        audio.play().then(() => {
+          musicBtnText.textContent = "Pause Music";
+          isPlaying = true;
+        }).catch(err => {
+          console.log("Audio play blocked by browser policy until interaction.");
+        });
+      }
+    }
+
+    // Auto-play music on the first screen touch/tap anywhere
+    document.addEventListener('touchstart', function startAudioOnTouch() {
+      if (!isPlaying) {
+        toggleAudio();
+      }
+      document.removeEventListener('touchstart', startAudioOnTouch);
+    }, { once: true });
+
+    // 2. Candle Blowing Logic & Confetti
+    function blowCandle() {
+      const flame = document.getElementById('flame');
+      const instruction = document.getElementById('cake-instruction');
+      
+      if (!flame.classList.contains('off')) {
+        flame.classList.add('off');
+        instruction.textContent = "🥳 Wish Granted! Happy Birthday in Advance, My Love!";
+        instruction.style.color = "#ff99bb";
+        triggerFireworks();
+      }
+    }
+
+    // 3. Gift Box Modal Pop-ups
+    const giftData = {
+      1: {
+        title: "🎁 Advance Birthday Hug!",
+        text: "You make every single day brighter, happier, and filled with warmth. Thank you for being the most loving, caring, and incredible husband!"
+      },
+      2: {
+        title: "💌 A Little Note For You",
+        text: "Even though your birthday is on Nov 1st, my heart couldn't wait to start the celebrations. You are my best friend, my greatest adventure, and my safe place. I love you endlessly!"
+      },
+      3: {
+        title: "⭐ My Wish For You",
+        text: "May this coming year bring you boundless success, good health, continuous joy, and all the happiness your wonderful heart deserves!"
+      },
+      4: {
+        title: "💖 Always By Your Side",
+        text: "Today, tomorrow, on November 1st, and forever — I'm so proud and grateful to walk through life by your side. Happy Birthday in Advance!"
+      }
+    };
+
+    function openGift(id) {
+      const data = giftData[id];
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-text').textContent = data.text;
+      document.getElementById('modal-overlay').classList.add('active');
+      triggerFireworks();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+
+    // 4. Floating Particles/Stars Animation
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + Math.random() * 100;
+        this.size = Math.random() * 3 + 1;
+        this.speedY = Math.random() * 1.5 + 0.5;
+        this.opacity = Math.random() * 0.7 + 0.3;
+      }
+      update() {
+        this.y -= this.speedY;
+        if (this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.fillStyle = `rgba(255, 153, 187, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // 5. Burst Fireworks/Confetti Effect
+    function triggerFireworks() {
+      for (let i = 0; i < 35; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * (canvas.height * 0.6);
+        ctx.fillStyle = ['#ff3366', '#ffd700', '#ff99bb', '#ffffff'][Math.floor(Math.random() * 4)];
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 4 + 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  </script>
+</body>
+</html>
